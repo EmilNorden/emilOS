@@ -26,8 +26,20 @@ stack_top:
 _start:
 	movl $stack_top, %esp
 
+	# enable paging
+	# mov %cr0, %eax
+	# or $0x80000000, %eax
+	# mov %eax, %cr0
+
+	# Push multiboot magic number (eax) and multiboot information structure (ebx)
+	pushl %eax
+	pushl %ebx
+
 	# Call the global constructors.
 	call _init
+
+	# bochs Magic Breakpoint
+	# xchgw %bx, %bx
 
 	# Transfer control to the main kernel.
 	call kernel_main

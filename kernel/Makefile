@@ -59,6 +59,9 @@ emilos.kernel: $(OBJS) $(ARCHDIR)/linker.ld
 $(ARCHDIR)/crtbegin.o $(ARCHDIR)/crtend.o:
 	OBJ=`$(CC) $(CFLAGS) $(LDFLAGS) -print-file-name=$(@F)` && cp "$$OBJ" $@
 
+.cpp.o:
+	$(CC) -MD -c $< -o $@ -std=gnu++11 $(CFLAGS) $(CPPFLAGS)
+
 .c.o:
 	$(CC) -MD -c $< -o $@ -std=gnu11 $(CFLAGS) $(CPPFLAGS)
 
@@ -75,7 +78,6 @@ install: install-headers install-kernel
 install-headers:
 	mkdir -p $(DESTDIR)$(INCLUDEDIR)
 	cp -R -p include/. $(DESTDIR)$(INCLUDEDIR)/.
-	# cp -R --preserve=timestamps include/. $(DESTDIR)$(INCLUDEDIR)/.
 
 install-kernel: emilos.kernel
 	mkdir -p $(DESTDIR)$(BOOTDIR)
