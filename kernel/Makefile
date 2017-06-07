@@ -30,6 +30,8 @@ LIBS:=$(LIBS) $(KERNEL_ARCH_LIBS)
 KERNEL_OBJS=\
 $(KERNEL_ARCH_OBJS) \
 kernel/kernel.o \
+kernel/pool_allocator.o \
+kernel/page_frame_allocator.o
 
 OBJS=\
 $(ARCHDIR)/crti.o \
@@ -58,9 +60,6 @@ emilos.kernel: $(OBJS) $(ARCHDIR)/linker.ld
 
 $(ARCHDIR)/crtbegin.o $(ARCHDIR)/crtend.o:
 	OBJ=`$(CC) $(CFLAGS) $(LDFLAGS) -print-file-name=$(@F)` && cp "$$OBJ" $@
-
-.cpp.o:
-	$(CC) -MD -c $< -o $@ -std=gnu++11 $(CFLAGS) $(CPPFLAGS)
 
 .c.o:
 	$(CC) -MD -c $< -o $@ -std=gnu11 $(CFLAGS) $(CPPFLAGS)

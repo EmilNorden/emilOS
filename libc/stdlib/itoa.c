@@ -41,3 +41,29 @@ char* itoa(int val, char* buf, int len, int base) {
 
     return buf;
 }
+
+char* itoa64(long long val, char* buf, int len, int base) {
+    int index = 0;
+
+    if(val == 0) {
+        putc(buf, len, &index, '0');
+        putc(buf, len, &index, '\0');
+        return buf;
+    }
+
+    if(val < 0) {
+        putc(buf, len, &index, '-');
+        val = abs(val);
+    }
+
+    while(val > 0) {
+        putc(buf, len, &index, '0' + (val % base));
+        val = val / base;
+    }
+
+    putc(buf, len, &index, '\0');
+
+    strrev(buf, index);
+
+    return buf;
+}
