@@ -12,6 +12,8 @@
 #define PAGES_PER_INT       (32)
 #define IS_BIT_SET(X, Y)    (X & (1 << Y)) 
 
+static void process_memory_map(multiboot_info_t*);
+static void reserve_heap_pages(void);
 static inline bool is_bit_set(uint32_t value, uint32_t bit);
 static inline uint8_t disable_bit8(uint8_t value, uint32_t bit);
 static inline uint8_t enable_bit8(uint8_t value, uint32_t bit);
@@ -51,7 +53,12 @@ void palloc_init(multiboot_info_t* mbi)
     palloc_page_count = page_count;
     palloc_page_bitmap = (uint8_t*)pool_alloc(bitmap_size);
     memset(palloc_page_bitmap, 0xFF, bitmap_size);
+    process_memory_map(mbi);
+    reserve_heap_pages();
+}
 
+static void process_memory_map(multiboot_info_t* mbi)
+{
     uint64_t total_physmem = 0;
     multiboot_memory_map_t *mmap = (multiboot_memory_map_t *) mbi->mmap_addr;
     while((unsigned long) mmap < mbi->mmap_addr + mbi->mmap_length) {
@@ -74,6 +81,18 @@ void palloc_init(multiboot_info_t* mbi)
     printf("Found %l MB of RAM.\n", total_physmem / (1024*1024));
 }
 
+static void reserve_heap_pages(void)
+{
+    void* heap_begin = pool_heap_begin();
+    void* heap_end = pool_heap_end();
+    uint32_t heap_start_page = (uint32_t)heap_begin / PAGE_SIZE;
+    uint32_t heap_end_page = (uint32_t)heap_end / PAGE_SIZE;
+    printf("Reserving heap memory at %d to %d\n", pool_heap_begin(), pool_heap_end());
+    for(uint32_t page = heap_start_page; page < heap_end_page; ++page) {
+        allocate_page(page);
+    }
+}
+
 void* palloc(void)
 {
     uint32_t* bmp = (uint32_t*)palloc_page_bitmap;
@@ -85,6 +104,7 @@ void* palloc(void)
         for(int bit = 0; bit < 32; ++bit) {
             if(!is_bit_set(bmp[i], bit)) 
                 continue;
+
             bmp[i] = disable_bit32(bmp[i], bit);
             uint32_t page_index = (i * PAGES_PER_INT) + bit;
             return (void*)(page_index * PAGE_SIZE);

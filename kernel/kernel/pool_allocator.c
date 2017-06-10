@@ -27,7 +27,7 @@ void* pool_alloc(size_t size)
     if(pool_current > pool_heap_end()) {
         // TODO: PANIC
     }
-
+    
     return ptr;
 }
 
