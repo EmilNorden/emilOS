@@ -4,6 +4,9 @@
 #include <stddef.h>
 
 void pool_init(void);
-void* pool_alloc(size_t size);
+void* pool_alloc(size_t);
+void pool_free(void*);
+void* pool_heap_begin(void);
+void* pool_heap_end(void);
 
 #endif

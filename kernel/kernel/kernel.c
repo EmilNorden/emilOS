@@ -8,6 +8,8 @@
 #define MEMORY_MAP_BITMASK (0b1000000)
 #define HAS_MEMORY_MAP(x) (x & MULTIBOOT_INFO_MEM_MAP)
 
+static void kernel_init(multiboot_info_t *mbi);
+
 void kernel_main(multiboot_info_t* mbi, unsigned int magic)
 {
 	terminal_initialize();
@@ -23,7 +25,13 @@ void kernel_main(multiboot_info_t* mbi, unsigned int magic)
 		return;
 	}
 
+	kernel_init(mbi);
+
+	printf("Hello, world!\n");
+}
+
+static void kernel_init(multiboot_info_t *mbi)
+{
 	pool_init();
 	palloc_init(mbi);
-	printf("Hello, world!\n");
 }

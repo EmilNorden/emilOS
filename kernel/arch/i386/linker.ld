@@ -39,9 +39,13 @@ SECTIONS
 		*(.bss)
 	}
 
+	/* Figure out how to fill section with zeroes */
 	.heap BLOCK(4K) : ALIGN(4K)
 	{
 		__HEAP_START = .;
+		FILL(0x00)
+		. = . + 4K;
+		__HEAP_END = .;
 	}
 
 	/* The compiler may produce other sections, put them in the proper place in

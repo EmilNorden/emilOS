@@ -64,12 +64,26 @@ int printf(const char* restrict format, ...) {
 				return -1;
 			written += len;
 		}
-		else if (*format == 'd') {
+		else if (*format == 'l') {
 			format++;
-			// TODO: 'd' should be signed long. I'm doing this because I'm lazy.
+			// TODO: 'l' shouldnt be long long. I'm doing this because I'm lazy.
 			long long val = va_arg(parameters, long long);
 			char cbuf[24];
 			itoa64(val, cbuf, 24, 10);
+			size_t len = strlen(cbuf);
+			if(maxrem < len) {
+				// TODO: Set errno to EOVERFLOW
+				return -1;
+			}
+			if(!print(cbuf, len))
+				return -1;
+			written += len;
+		}
+		else if (*format == 'd') {
+			format++;
+			long val = va_arg(parameters, long);
+			char cbuf[24];
+			itoa(val, cbuf, 24, 10);
 			size_t len = strlen(cbuf);
 			if(maxrem < len) {
 				// TODO: Set errno to EOVERFLOW

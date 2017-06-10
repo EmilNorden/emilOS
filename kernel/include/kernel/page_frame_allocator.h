@@ -3,7 +3,8 @@
 
 struct multiboot_info;
 
-void palloc_init(struct multiboot_info* mbi);
-void* palloc();
+void palloc_init(struct multiboot_info*);
+void* palloc(void);
+void pfree(void*);
 
 #endif
