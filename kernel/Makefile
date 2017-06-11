@@ -31,7 +31,8 @@ KERNEL_OBJS=\
 $(KERNEL_ARCH_OBJS) \
 kernel/kernel.o \
 kernel/pool_allocator.o \
-kernel/page_frame_allocator.o
+kernel/page_frame_allocator.o \
+kernel/paging.o
 
 OBJS=\
 $(ARCHDIR)/crti.o \

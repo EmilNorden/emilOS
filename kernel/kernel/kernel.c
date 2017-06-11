@@ -4,6 +4,7 @@
 #include <kernel/multiboot.h>
 #include "kernel/pool_allocator.h"
 #include "kernel/page_frame_allocator.h"
+#include "kernel/paging.h"
 
 #define MEMORY_MAP_BITMASK (0b1000000)
 #define HAS_MEMORY_MAP(x) (x & MULTIBOOT_INFO_MEM_MAP)
@@ -34,4 +35,5 @@ static void kernel_init(multiboot_info_t *mbi)
 {
 	pool_init();
 	palloc_init(mbi);
+	paging_init();
 }
