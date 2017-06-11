@@ -1,19 +1,12 @@
 #include <stdlib.h>
+#include <string.h>
+
+static char itoa_chars[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
 static void putc(char* buf, int len, int *index, char c) {
     if(*index >= len)
         return;
     buf[(*index)++] = c;
-}
-
-static void strrev(char *buf, int len) {
-    int lo = 0;
-    int hi = len-2;
-    while(lo < hi) {
-        char tmp = buf[lo];
-        buf[lo++] = buf[hi];
-        buf[hi--] = tmp;
-    }
 }
 
 char* itoa(int val, char* buf, int len, int base) {
@@ -25,13 +18,13 @@ char* itoa(int val, char* buf, int len, int base) {
         return buf;
     }
 
-    if(val < 0) {
+    if(val < 0 && base == 10) {
         putc(buf, len, &index, '-');
         val = abs(val);
     }
 
     while(val > 0) {
-        putc(buf, len, &index, '0' + (val % base));
+        putc(buf, len, &index, itoa_chars[val % base]);
         val = val / base;
     }
 
@@ -51,13 +44,13 @@ char* itoa64(long long val, char* buf, int len, int base) {
         return buf;
     }
 
-    if(val < 0) {
+    if(val < 0 && base == 10) {
         putc(buf, len, &index, '-');
         val = abs(val);
     }
 
     while(val > 0) {
-        putc(buf, len, &index, '0' + (val % base));
+        putc(buf, len, &index, itoa_chars[val % base]);
         val = val / base;
     }
 

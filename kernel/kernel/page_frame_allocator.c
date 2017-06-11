@@ -87,7 +87,7 @@ static void reserve_heap_pages(void)
     void* heap_end = pool_heap_end();
     uint32_t heap_start_page = (uint32_t)heap_begin / PAGE_SIZE;
     uint32_t heap_end_page = (uint32_t)heap_end / PAGE_SIZE;
-    printf("Reserving heap memory at %d to %d\n", pool_heap_begin(), pool_heap_end());
+    printf("Reserving heap memory at 0x%p to 0x%p\n", pool_heap_begin(), pool_heap_end());
     for(uint32_t page = heap_start_page; page < heap_end_page; ++page) {
         allocate_page(page);
     }

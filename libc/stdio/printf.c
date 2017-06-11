@@ -93,6 +93,29 @@ int printf(const char* restrict format, ...) {
 				return -1;
 			written += len;
 		}
+		else if (*format == 'p') {
+			format++;
+			void* val = va_arg(parameters, void*);
+			char cbuf[9];
+			itoa((int)val, cbuf, 9, 16);
+			size_t len = strlen(cbuf);
+
+			//TODO: This padding array would need to be extended if I would ever go 64-bit
+			char padding[] = {'0', '0', '0', '0', '0', '0', '0', '\0'};
+			//sizeof(void*)*2 is the maximum size of a pointer hex string.
+			size_t padcount = (sizeof(void*) * 2) - len;
+			padding[padcount] = '\0';
+
+			if(maxrem < sizeof(void*) * 2) {
+				// TODO: Set errno to EOVERFLOW
+				return -1;
+			}
+			if(!print(padding, padcount))
+				return -1;
+			if(!print(cbuf, len))
+				return -1;
+			written += len;
+		}
 		else {
 			format = format_begun_at;
 			size_t len = strlen(format);
